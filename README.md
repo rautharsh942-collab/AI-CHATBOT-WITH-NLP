@@ -73,3 +73,4 @@ Information retrieval bots
 
 This project highlights the practical implementation of Artificial Intelligence and Natural Language Processing through chatbot development. By completing this task, I gained a strong understanding of how conversational systems work, how text data is processed, and how intelligent responses are generated. The project also strengthened my Python programming skills and provided valuable experience in building AI-based applications. This chatbot serves as a strong foundation for developing more advanced conversational AI systems in the future.
 # OUTPUT:-
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/0f0a2011-5f0c-4b41-92e2-d08d8bd78b66" />
