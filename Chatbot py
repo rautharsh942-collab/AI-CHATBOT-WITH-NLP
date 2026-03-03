@@ -1,0 +1,78 @@
+import nltk
+import random
+import string
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Download required NLTK data
+nltk.download('punkt_tab')
+nltk.download('wordnet')
+
+from nltk.stem import WordNetLemmatizer
+
+# Sample knowledge base
+corpus = """
+hello hi hey
+how are you i am fine
+what is your name my name is chatbot
+what is ai artificial intelligence
+what is nlp natural language processing
+what is python python is a programming language
+bye goodbye see you
+"""
+
+# Preprocessing
+lemmer = WordNetLemmatizer()
+
+def LemTokens(tokens):
+    return [lemmer.lemmatize(token) for token in tokens]
+
+def LemNormalize(text):
+    remove_punct = dict((ord(punct), None) for punct in string.punctuation)
+    return LemTokens(nltk.word_tokenize(text.lower().translate(remove_punct)))
+
+# Greeting responses
+GREETING_INPUTS = ("hello", "hi", "hey")
+GREETING_RESPONSES = ["Hi!", "Hello!", "Hey there!"]
+
+def greeting(sentence):
+    for word in sentence.split():
+        if word.lower() in GREETING_INPUTS:
+            return random.choice(GREETING_RESPONSES)
+
+# Chatbot response
+def response(user_response):
+    chatbot_response = ""
+    sent_tokens = nltk.sent_tokenize(corpus)
+    sent_tokens.append(user_response)
+
+    TfidfVec = TfidfVectorizer(tokenizer=LemNormalize, stop_words='english')
+    tfidf = TfidfVec.fit_transform(sent_tokens)
+
+    vals = cosine_similarity(tfidf[-1], tfidf)
+    idx = vals.argsort()[0][-2]
+    flat = vals.flatten()
+    flat.sort()
+
+    req_tfidf = flat[-2]
+
+    if req_tfidf == 0:
+        chatbot_response = "Sorry, I didn't understand that."
+    else:
+        chatbot_response = sent_tokens[idx]
+
+    return chatbot_response
+
+# Main chat loop
+print("Chatbot: Hello! Ask me something. Type 'bye' to exit.")
+
+while True:
+    user_input = input("You: ").lower()
+
+    if user_input == "bye":
+        print("Chatbot: Goodbye! Have a nice day 😊")
+        break
+    elif greeting(user_input) is not None:
+        print("Chatbot:", greeting(user_input))
+    else:
+        print("Chatbot:", response(user_input))
